@@ -1,5 +1,6 @@
 import Bootloader from './Bootloader.js';
 import Menu from './scenes/Menu.js';
+import Level2 from './scenes/Level2.js';
 
 const config = {
     title: "TOM",
@@ -7,8 +8,8 @@ const config = {
     type: Phaser.AUTO,
     scale: {
         parent: "phaser_container",
-        width: 1280,
-        height: 720,
+        width: 950,
+        height: 600,
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
@@ -24,7 +25,10 @@ const config = {
     },
     scene: [        
         Bootloader,
-        Menu
+        Menu,
+        //Level1,
+        Level2
+        //Level3
     ]
 };
 
