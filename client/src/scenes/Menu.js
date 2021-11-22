@@ -52,7 +52,7 @@ class Menu extends Phaser.Scene{
                 y:-200,
                 duration:1000,
                 onComplete:()=>{
-                    this.scene.start('Level2')
+                    this.scene.start('Level3')
                 }
             });
             this.add.tween({

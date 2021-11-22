@@ -1,6 +1,9 @@
 import Bootloader from './Bootloader.js';
 import Menu from './scenes/Menu.js';
 import Level2 from './scenes/Level2.js';
+import Level3 from './scenes/Level3.js';
+
+import UI from './scenes/UI.js';
 
 const config = {
     title: "TOM",
@@ -25,11 +28,12 @@ const config = {
     },
     scene: [        
         Bootloader,
-        Menu,
-        //Level1,
-        Level2
-        //Level3
+        UI,      
+        Level2,
+        Level3,
+        Menu
+        
     ]
 };
 
-new Phaser.Game(config);
+const game =new Phaser.Game(config);

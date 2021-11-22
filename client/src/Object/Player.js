@@ -6,7 +6,7 @@ class Player extends Phaser.GameObjects.Sprite{
         this.scene.add.existing(this);
         this.scene.physics.world.enable(this);
 
-        this.setScale(2);
+        this.setScale(3);
         this.body.setSize(14,20);
         this.body.setOffset(2,5);
 
@@ -17,8 +17,17 @@ class Player extends Phaser.GameObjects.Sprite{
         this.preMov2='tomato_walk';
         this.hitDelay=false;
         this.cursor=this.scene.input.keyboard.createCursorKeys();
-
+        
         this.life=3;
+
+        this.jumpCount=0;
+        this.isFlapMode=false;
+        this.isGravityInverted=false;
+        this.rotateAnim=null;
+
+        this.scene.input.on('pointerdown',()=>{
+            this.onAction();
+        });
     }
 
     updateLevel2(){
@@ -26,8 +35,9 @@ class Player extends Phaser.GameObjects.Sprite{
             this.jumping=true;
             this.body.setVelocityY(-800);
 
-       }else if(this.body.blocked.down){
+       }else if(this.body.blocked.down&&this.jumpCount>=2){
             this.jumping=false;
+            this.jumpCount=0;
        }
        this.body.setVelocityX(0);
        this.body.setSize(14,20);
@@ -38,6 +48,43 @@ class Player extends Phaser.GameObjects.Sprite{
            this.anims.play('tomato_walk');
        }
     }
+
+    onAction(){     
+        if(this.isFlapMode){
+            this.body.velocity.y=-400;
+            return;
+        }
+        if(this.jumpCount>=2){
+            return;
+        }
+        this.jumpCount++;
+        if(this.isGravityInverted){
+            //this.jumpAudio.play();
+            this.body.velocity.y=700;
+            this.rotate(-360);
+        }else{
+            //this.jumpAudio.play();
+            this.body.velocity.y=-700;            
+            this.rotate(360);
+        }        
+    } 
+
+    rotate(angleValue){
+        if(!this.isFlapMode){
+            if(!this.rotateAnim){
+                this.rotateAnim=this.scene.tweens.add({
+                    targets:this,
+                    angle:angleValue,
+                    duration:700,
+                    ease:'Linear'
+                });
+            }else{
+                this.rotateAnim.play();
+            }
+        }
+    }
+
+
 
     updateLevel3(){
         if(this.cursor.left.isDown){
@@ -84,6 +131,30 @@ class Player extends Phaser.GameObjects.Sprite{
             this.jumping=false;
        }
     }
+    
+    bombCollision(){
+        if(!this.hitDelay){
+            /**importante ya que es para colisionar una sola vez */
+            console.log('TOMATO COLISIONA CON BOMBA 1 VEZ');            
+            this.hitDelay=true;
 
+            this.scene.sound.play('draw');
+            this.life--;
+            this.scene.registry.events.emit('remove_life');
+
+            if(this.life===0){
+                this.scene.registry.events.emit('game_over');
+            }
+
+            this.setTint(0x1abc9c);
+            this.scene.time.addEvent({
+                delay:600,
+                callback:()=>{
+                    this.hitDelay=false;
+                    this.clearTint();
+                }
+            });
+        }
+    }
 }
 export default Player;
