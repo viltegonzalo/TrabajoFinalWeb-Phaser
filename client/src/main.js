@@ -31,8 +31,7 @@ const config = {
         UI,      
         Level2,
         Level3,
-        Menu
-        
+        Menu        
     ]
 };
 
